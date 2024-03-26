@@ -7,6 +7,7 @@ package com.ruoyi.system.domain;
  */
 public class QA {
 
+    private Long id;
     //问题
     private String question;
     //答案
@@ -29,5 +30,11 @@ public class QA {
         this.answer = answer;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -61,6 +61,9 @@ public class QuestionController extends BaseController {
             Question questions = list.get(i);
             //把问题放在创建实体类
             qa.setQuestion(questions.getQuestion());
+
+            qa.setId(questions.getId());
+
             //创建答案（查询的参数）
             Answer answer = new Answer();
             //把问题的主键放在答案的参数中
@@ -117,8 +120,6 @@ public class QuestionController extends BaseController {
     /**
      * 修改问题
      */
-    @PreAuthorize("@ss.hasPermi('system:question:edit')")
-    @Log(title = "问题", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody Question question) {
         return toAjax(questionService.updateQuestion(question));
@@ -127,10 +128,14 @@ public class QuestionController extends BaseController {
     /**
      * 删除问题
      */
-    @PreAuthorize("@ss.hasPermi('system:question:remove')")
-    @Log(title = "问题", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
+
+        for (Long id : ids) {
+            Answer answer = answerService.selectAnswerById(id);
+            answerService.deleteAnswerById(answer.getId());
+        }
+
         return toAjax(questionService.deleteQuestionByIds(ids));
     }
 }
