@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AnswerMapper">
+    
+    <resultMap type="Answer" id="AnswerResult">
+        <result property="id"    column="id"    />
+        <result property="questionId"    column="question_id"    />
+        <result property="answer"    column="answer"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAnswerVo">
+        select id, question_id, answer, remark from answer
+    </sql>
+
+    <select id="selectAnswerList" parameterType="Answer" resultMap="AnswerResult">
+        <include refid="selectAnswerVo"/>
+        <where>  
+            <if test="questionId != null "> and question_id = #{questionId}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+        </where>
+    </select>
+    
+    <select id="selectAnswerById" parameterType="Long" resultMap="AnswerResult">
+        <include refid="selectAnswerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAnswer" parameterType="Answer">
+        insert into answer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="questionId != null">question_id,</if>
+            <if test="answer != null">answer,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="questionId != null">#{questionId},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAnswer" parameterType="Answer">
+        update answer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionId != null">question_id = #{questionId},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAnswerById" parameterType="Long">
+        delete from answer where id = #{id}
+    </delete>
+
+    <delete id="deleteAnswerByIds" parameterType="String">
+        delete from answer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
