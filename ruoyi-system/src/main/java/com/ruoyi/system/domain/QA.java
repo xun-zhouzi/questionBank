@@ -7,9 +7,14 @@ package com.ruoyi.system.domain;
  */
 public class QA {
 
+    //id
     private Long id;
+    //类型id
+    private Long typeid;
     //问题
     private String question;
+
+
     //答案
     private String answer;
 
@@ -36,5 +41,13 @@ public class QA {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(Long typeid) {
+        this.typeid = typeid;
     }
 }

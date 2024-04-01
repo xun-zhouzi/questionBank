@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.Answer;
 import com.ruoyi.system.domain.QA;
 import com.ruoyi.system.service.IAnswerService;
@@ -45,8 +46,9 @@ public class QuestionController extends BaseController {
      * 查询问题列表
      */
     @GetMapping("/list")
-    public AjaxResult list(Question question) {
+    public TableDataInfo list(Question question) {
 
+        startPage();
         //查询问题列表
         List<Question> list = questionService.selectQuestionList(question);
 
@@ -61,9 +63,10 @@ public class QuestionController extends BaseController {
             Question questions = list.get(i);
             //把问题放在创建实体类
             qa.setQuestion(questions.getQuestion());
-
+            //添加id
             qa.setId(questions.getId());
-
+            // 添加类型id
+            qa.setTypeid(questions.getTypeid());
             //创建答案（查询的参数）
             Answer answer = new Answer();
             //把问题的主键放在答案的参数中
@@ -72,11 +75,13 @@ public class QuestionController extends BaseController {
             List<Answer> answers = answerService.selectAnswerList(answer);
             //把答案放到实体类里
             qa.setAnswer(answers.get(0).getAnswer());
-
+            //把实体类放到集合中
             objects.add(qa);
         }
+        TableDataInfo dataInfo=getDataTable(list);
+        dataInfo.setRows(objects);
 
-        return AjaxResult.success(objects);
+        return dataInfo;
     }
 
     /**
@@ -108,10 +113,8 @@ public class QuestionController extends BaseController {
     public AjaxResult add(@RequestBody Question question) {
 
         questionService.insertQuestion(question);
-
         Answer answer = new Answer();
         answer.setQuestionId(question.getId());
-
         answer.setAnswer(question.getAnswer());
         answerService.insertAnswer(answer);
         return success();
